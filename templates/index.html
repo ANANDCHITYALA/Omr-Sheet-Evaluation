@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Innomatics OMR Evaluation System</title>
+  <link rel="icon" href="https://www.innomatics.in/favicon.ico" type="image/x-icon" />
+  <!-- <link rel="stylesheet" href="./style.css" /> -->
+   <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <div class="logo">
+        <img
+          src="https://www.innomatics.in/wp-content/uploads/2023/01/Innomatics-Logo1.png"
+          alt="Innomatics Logo"
+        />
+      </div>
+
+      <div class="menu">
+        <div><a href="{{ url_for('student') }}" target="_blank">Student</a></div>
+        <div><a href="{{ url_for('lecturer') }}">Professor</a></div>
+        <div><a href="{{ url_for('result') }}">Result</a></div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="hero-content">
+        <h1>📄 Innomatics Automated OMR Evaluation System</h1>
+        <p>Empowering exams with instant, accurate evaluation for Students and Lecturers.</p>
+      </div>
+
+      <!-- Dynamic Leaderboard -->
+      <div class="leaderboard">
+        <h2>🏆 Latest Examination Results</h2>
+        <div id="leaderboard-container">
+          <p class="loading">Loading latest leaderboard...</p>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Innomatics Research Labs | Automated OMR Evaluation System</p>
+  </footer>
+
+  <script>
+    async function loadLeaderboard() {
+      const container = document.getElementById("leaderboard-container");
+      try {
+        const res = await fetch("/leaderboard-data");
+        const data = await res.json();
+
+        if (!Array.isArray(data)) {
+          container.innerHTML = "<p>No leaderboard data available yet.</p>";
+          return;
+        }
+
+        let html = "<ul>";
+        data.forEach((item) => {
+          let medalColor = "";
+          if (item.rank === 1) medalColor = "gold";
+          else if (item.rank === 2) medalColor = "silver";
+          else if (item.rank === 3) medalColor = "bronze";
+          else medalColor = "normal";
+
+          html += `
+            <li class="${medalColor}">
+              <span class="rank">${item.rank}</span>
+              <span class="name">${item.name}</span>
+              <span class="score">${item.score}</span>
+            </li>`;
+        });
+        html += "</ul>";
+        container.innerHTML = html;
+      } catch (err) {
+        container.innerHTML = "<p>⚠️ Failed to load leaderboard.</p>";
+        console.error(err);
+      }
+    }
+
+    loadLeaderboard();
+    setInterval(loadLeaderboard, 30000); // refresh every 30 sec
+  </script>
+</body>
+</html>

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lecturer | Admin Panel</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    /* Background animation */
+    body {
+      background: linear-gradient(120deg, #831843, #0f172a, #831843);
+      background-size: 200% 200%;
+      animation: bgShift 10s ease-in-out infinite;
+      color: white;
+      font-family: "Poppins", sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+
+    @keyframes bgShift {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Glassmorphism card */
+    .glass-card {
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.2);
+      border-radius: 20px;
+      padding: 40px;
+      width: 90%;
+      max-width: 550px;
+      margin: auto;
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .glass-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+
+    /* Buttons */
+    .btn {
+      width: 100%;
+      background: linear-gradient(to right, #ec4899, #db2777);
+      color: white;
+      font-weight: 600;
+      padding: 12px;
+      border-radius: 10px;
+      border: none;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      background: linear-gradient(to right, #f472b6, #ec4899);
+      transform: translateY(-2px);
+    }
+
+    /* Inputs */
+    input[type="text"],
+    input[type="password"],
+    input[type="file"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 20px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      border-radius: 10px;
+      color: white;
+    }
+
+    input::file-selector-button {
+      background: #db2777;
+      border: none;
+      color: white;
+      padding: 8px 12px;
+      border-radius: 8px;
+      cursor: pointer;
+      margin-right: 10px;
+      transition: background 0.3s ease;
+    }
+
+    input::file-selector-button:hover {
+      background: #f472b6;
+    }
+  </style>
+</head>
+<body>
+  <!-- 🌟 HEADER -->
+  <header class="bg-white text-gray-900 py-4 shadow-lg fixed top-0 w-full z-10">
+    <div class="max-w-7xl mx-auto flex justify-between items-center px-6">
+      <img
+        src="https://www.innomatics.in/wp-content/uploads/2023/01/Innomatics-Logo1.png"
+        alt="Innomatics Logo"
+        class="h-10"
+      />
+      <nav class="flex gap-6 font-semibold">
+         <div><a href="{{ url_for('home') }}">EXIT</a></div> 
+        
+      </nav>
+    </div>
+  </header>
+
+  <!-- 🔒 LOGIN FORM -->
+  <main class="flex-grow flex items-center justify-center mt-24">
+    <div id="loginBox" class="glass-card">
+      <h2 class="text-2xl font-bold mb-6 text-center text-pink-400">
+        Lecturer Login
+      </h2>
+      <input type="text" id="username" placeholder="Username" required />
+      <input type="password" id="password" placeholder="Password" required />
+      <button class="btn mt-2" onclick="authenticate()">Login</button>
+      <p id="loginError" class="text-red-400 text-center mt-4 hidden">
+        Invalid credentials. Try again.
+      </p>
+    </div>
+
+    <!-- 🧠 ADMIN PANEL (Hidden until login) -->
+    <div id="adminPanel" class="glass-card hidden">
+      <h2 class="text-2xl font-bold mb-8 text-pink-400 text-center">Lecturer Control Panel</h2>
+
+      <form action="/upload_answer" method="post" enctype="multipart/form-data">
+        <label>Set Name (e.g., A, B):</label>
+        <input name="set_name" type="text" placeholder="Enter set name" required />
+
+        <label>Upload Answer Key (JSON):</label>
+        <input type="file" name="answer_file" accept=".json" required />
+
+        <button class="btn mt-4">📤 Upload Answer Key</button>
+      </form>
+
+      <hr class="my-8 border-gray-500" />
+
+      <form action="/evaluate_all" method="post">
+        <label>Select Answer Set:</label>
+        <input name="set_choice" type="text" placeholder="Enter set name" required />
+        <button class="btn mt-4">⚙️ Run Evaluation</button>
+      </form>
+    </div>
+  </main>
+
+  <!-- ⚙️ FOOTER -->
+  <footer class="bg-white text-gray-800 py-3 text-center w-full mt-auto">
+    <p class="text-sm font-semibold">
+      © 2025 Innomatics Research Labs | All Rights Reserved
+    </p>
+  </footer>
+
+  <!-- 🧩 SCRIPT -->
+  <script>
+    function authenticate() {
+      const user = document.getElementById("username").value;
+      const pass = document.getElementById("password").value;
+      const error = document.getElementById("loginError");
+      const loginBox = document.getElementById("loginBox");
+      const adminPanel = document.getElementById("adminPanel");
+
+      if (user === "lecturer" && pass === "lect123") {
+        loginBox.classList.add("hidden");
+        adminPanel.classList.remove("hidden");
+      } else {
+        error.classList.remove("hidden");
+      }
+    }
+  </script>
+</body>
+</html>

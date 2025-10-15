@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin Login | Innomatics</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-900 text-white flex flex-col justify-center items-center min-h-screen">
+  <div class="bg-gray-800 p-8 rounded-2xl shadow-lg w-96">
+    <h1 class="text-3xl font-bold mb-6 text-center text-pink-500">Admin Login</h1>
+
+    <!-- Admin Email -->
+    <input type="email" id="adminEmail" placeholder="Admin Email"
+      class="w-full p-3 rounded-lg mb-4 text-gray-900" />
+
+    <button id="sendOtpBtn"
+      class="w-full bg-pink-600 hover:bg-pink-500 text-white font-semibold py-2 rounded-lg mb-4">
+      Send OTP
+    </button>
+
+    <!-- OTP Section -->
+    <div id="otpSection" class="hidden">
+      <input type="text" id="otpInput" placeholder="Enter OTP"
+        class="w-full p-3 rounded-lg mb-4 text-gray-900" />
+
+      <button id="verifyOtpBtn"
+        class="w-full bg-green-600 hover:bg-green-500 text-white font-semibold py-2 rounded-lg">
+        Verify OTP
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const sendOtpBtn = document.getElementById("sendOtpBtn");
+    const otpSection = document.getElementById("otpSection");
+
+    sendOtpBtn.addEventListener("click", async () => {
+  const email = document.getElementById("adminEmail").value.trim();
+  if (!email) {
+    alert("Please enter your email.");
+    return;
+  }
+
+  sendOtpBtn.disabled = true;
+  sendOtpBtn.textContent = "Sending OTP...";
+
+  const res = await fetch("/admin_login", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ email })
+  });
+  const data = await res.json();
+
+  if (res.ok) {
+    alert("OTP sent to your admin email.");
+    otpSection.classList.remove("hidden");
+  } else {
+    alert(data.error || "Error sending OTP");
+    sendOtpBtn.disabled = false;
+    sendOtpBtn.textContent = "Send OTP";
+  }
+});
+
+
+    document.getElementById("verifyOtpBtn").addEventListener("click", async () => {
+      const otp = document.getElementById("otpInput").value;
+      const res = await fetch("/verify_otp", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ otp })
+      });
+      const data = await res.json();
+      if (res.ok) {
+        alert("OTP verified! Redirecting to dashboard...");
+        window.location.href = "/admin";
+      } else {
+        alert("Invalid OTP. Try again.");
+        document.getElementById("otpInput").value = "";
+      }
+    });
+  </script>
+</body>
+</html>

@@ -55,7 +55,7 @@
   <script>
     // Fetch all users when page loads
     async function fetchUsers() {
-      const res = await fetch("/get_users");
+      const res = await fetch("/get_users", { credentials: "include" });
       const users = await res.json();
       const tbody = document.getElementById("userTable");
       tbody.innerHTML = "";
@@ -80,28 +80,31 @@
     }
 
     // Approve user
-    async function approveUser(email) {
-      const res = await fetch("/approve_user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-      const result = await res.json();
-      alert(result.message || result.error);
-      fetchUsers();
-    }
+async function approveUser(email) {
+  const res = await fetch("/approve_user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include", // ✅ important line
+    body: JSON.stringify({ email })
+  });
+  const result = await res.json();
+  alert(result.message || result.error);
+  fetchUsers();
+}
 
-    // Reject user
-    async function rejectUser(email) {
-      const res = await fetch("/reject_user", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email })
-      });
-      const result = await res.json();
-      alert(result.message || result.error);
-      fetchUsers();
-    }
+// Reject user
+async function rejectUser(email) {
+  const res = await fetch("/reject_user", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    credentials: "include", // ✅ important line
+    body: JSON.stringify({ email })
+  });
+  const result = await res.json();
+  alert(result.message || result.error);
+  fetchUsers();
+}
+
 
     // Logout
     document.getElementById("logoutBtn").addEventListener("click", async () => {

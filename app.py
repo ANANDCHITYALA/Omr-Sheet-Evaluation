@@ -213,6 +213,14 @@ def verify_otp():
 # ============================
 # ADMIN ACTIONS
 # ============================
+# @app.route("/get_users")
+# def get_users():
+#     users = User.query.all()
+#     return jsonify([
+#         {"name": u.name, "email": u.email, "role": u.role, "is_approved": u.is_approved}
+#         for u in users
+#     ])
+
 @app.route("/get_users")
 def get_users():
     if "verified_admin" not in session:
